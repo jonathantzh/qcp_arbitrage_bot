@@ -1,8 +1,4 @@
-const axios = require('axios')
 const assert = require('assert')
-const Kucoin = require('kucoin-api')
-const keys = require('../keys/keys');
-const kc = new Kucoin(keys.kucoinApiKey, keys.kucoinApiSecret);
 const f = require('../functions/general');
 
 //tests
