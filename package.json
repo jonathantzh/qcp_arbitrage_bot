@@ -4,6 +4,7 @@
   "description": "arbitrage binance and kucoin",
   "main": "arbitrage.js",
   "scripts": {
+    "start": "node server.js",
     "test": "mocha"
   },
   "author": "jonathan tan",
@@ -15,7 +16,6 @@
     "axios": "^0.18.0",
     "cors": "^2.8.5",
     "express": "^4.16.4",
-    "kucoin-api": "0.0.3",
-    "mongodb": "^3.1.13"
+    "kucoin-api": "0.0.3"
   }
 }

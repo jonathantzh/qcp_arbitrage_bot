@@ -1,36 +1,3 @@
-const axios = require('axios');
-const Kucoin = require('kucoin-api')
-const keys = require('../keys/keys');
-const kc = new Kucoin(keys.kucoinApiKey, keys.kucoinApiSecret);
-
-exports.retrieveBinanceInstruments = function() {
-    return new Promise(function (resolve,reject) {
-        axios.get("https://api.binance.com/api/v3/ticker/price").then(function (res) {
-            resolve(res);
-            done();
-        }).catch(function(err) {reject(err)});
-    })
-}
-
-exports.retrieveKcInstruments = function() {
-    return new Promise(function (resolve,reject) {
-        kc.getTradingSymbols().then(function(res){
-			resolve(res);
-			done();
-		}).catch(function(err) {reject(err)});
-    })
-}
-
-exports.retrieveKcInstrumentsTicker = function (pair) {
-    return new Promise(function (resolve,reject) {
-        kc.getTicker({
-            pair
-        }).then(function(res) {
-            resolve(res);
-        }).catch(function(err){reject(err)});
-    });
-}
-
 exports.extractMutualPairs = function(binRes, kcRes) {
     return new Promise(function (resolve,reject) {
         try {
@@ -50,4 +17,21 @@ exports.extractMutualPairs = function(binRes, kcRes) {
             reject(err);
         }
     })
+}
+
+exports.comparePrices = async function(pair, kcPrice, binPrice) {
+    //price difference must be greater than spread
+    if((kcPrice.data.lastDealPrice - (kcPrice.data.sell - kcPrice.data.buy)) > binPrice.price) {
+        console.log(pair,": Buy BINANCE, Sell KUCOIN");
+        // saveResult(pair,'binance');
+        return {pair, result: 'binance'};
+    } else if ((kcPrice.data.lastDealPrice + (kcPrice.data.sell - kcPrice.data.buy)) < binPrice.price) {
+        console.log(pair,": Buy KUCOIN, Sell BINANCE");
+        // saveResult(pair,'kucoin');
+        return {pair, result: 'kucoin'};;
+    } else {
+        console.log(pair,": NEITHER");
+        // saveResult(pair,'neither');
+        return {pair, result: 'neither'};
+    }
 }
