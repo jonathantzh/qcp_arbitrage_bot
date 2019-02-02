@@ -1,5 +1,5 @@
 # QCP Capital Arbitrage Bot
-1. Clone the repo
+1. Clone the repo: `git clone https://github.com/jonathantzh/qcp_arbitrage_bot.git`
 2. Create a `keys` folder in the project root directory, with `keys.js` file inside
 3. Export your Kucoin API keys from the `keys.js` file, as shown below:
 ```
