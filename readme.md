@@ -10,7 +10,6 @@ exports.kucoinApiSecret = '<MY KUCOIN API SECRET>'
 4. `docker run -p 9500:9500 qcp_arbitrage`
 ## Using local environment
 5. Run `npm install` in project root directory
-6. Run `npm run test` to run tests, ensure all are passing
-7. Run `npm start` to start HTTP server on port 9500
+6. Run `npm start` to start HTTP server on port 9500
 ## Once server is running
-8. `curl http://localhost:9500/arbitrageResults` to retrieve arbitrage results
+7. `curl http://localhost:9500/arbitrageResults` to retrieve arbitrage results
