@@ -1,7 +1,4 @@
 # QCP Capital Arbitrage Bot
-
-Steps to set up project
-
 1. Create a `keys` folder in the project root directory, with `keys.js` file inside.
 2. Export your Kucoin API keys from the `keys.js` file, as shown below:
 ```
