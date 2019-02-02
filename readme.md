@@ -13,4 +13,5 @@ exports.kucoinApiSecret = '<MY KUCOIN API SECRET>'
 6. Run `npm install` in project root directory
 7. Run `npm start` to start HTTP server on port 9500
 ## Once server is running
-8. `curl http://localhost:9500/arbitrageResults` to retrieve arbitrage results
+8. `curl http://localhost:9500/arbitrageResults` to retrieve all arbitrage results
+9. `curl http://localhost:9500/arbitrageResult?instrument={instrument (e.g. LTC-BTC)}` to retrieve arbitrage result for single instrument
