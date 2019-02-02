@@ -14,3 +14,4 @@ exports.kucoinApiSecret = '<MY KUCOIN API SECRET>'
 7. Run `npm start` to start HTTP server on port 9500
 ## Once server is running
 8. `curl http://localhost:9500/arbitrageResults` to retrieve arbitrage results
+9. If using PowerShell `curl`, you may need to add the flag `-UseBasicParsing`
