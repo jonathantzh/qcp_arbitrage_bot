@@ -19,11 +19,15 @@ exports.extractMutualPairs = function(binRes, kcRes) {
     })
 }
 
-exports.comparePrices = async function(pair, kcPrice, binPrice) {
+exports.comparePrices = async function(pair, kcPrice, binPrice, kcExchangeRates) {
     //price difference must be greater than spread
     let kucoinPrice = kcPrice.data.lastDealPrice;
     let binancePrice = binPrice.price;
     let spread = kcPrice.data.sell - kcPrice.data.buy;
+
+    //get exchange rate of base instrument to USD
+    console.log(kcExchangeRates.data.rates[pair.split("-")[0]]["USD"])
+
     if(kucoinPrice - binancePrice > spread) {
         console.log(pair,": Buy BINANCE, Sell KUCOIN");
         return {pair, result: 'binance'};

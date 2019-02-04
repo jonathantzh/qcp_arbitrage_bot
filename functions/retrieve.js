@@ -25,9 +25,18 @@ exports.retrieveKcInstruments = function() {
 
 exports.retrieveKcInstrumentsTicker = function (pair) {
     return new Promise(function (resolve,reject) {
-        kc.getTicker({
-            pair
-        }).then(function(res) {
+        kc.getTicker({pair}).then(function(res) {
+            resolve(res);
+        }).catch(function(err){reject(err)});
+    });
+}
+
+exports.retrieveKcExchangeRates = function (instruments) {
+
+    let baseInstruments = instruments.map(instrument => instrument.split('-')[0])
+
+    return new Promise(function (resolve,reject) {
+        kc.getExchangeRates({symbols: baseInstruments}).then(function(res) {
             resolve(res);
         }).catch(function(err){reject(err)});
     });

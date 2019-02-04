@@ -6,13 +6,19 @@ async function main() {
     let kcPairs = await r.retrieveKcInstruments();
     let mutualPairs = await g.extractMutualPairs(binPairs,kcPairs);
     
+    let kcExchangeRates = await r.retrieveKcExchangeRates(mutualPairs);
+    console.log(kcExchangeRates);
+    // let binExchangeRates = await r.retrieveBinExchangeRates();
+
     let arbitrageResults = [];
 
     for(let i=0; i<mutualPairs.length; i++) {
         console.log("Comparing prices for", mutualPairs[i], "<", i, "of", mutualPairs.length, ">");
+
         let kcPrice = await r.retrieveKcInstrumentsTicker(mutualPairs[i]);
         let binPrice = binPairs.data.find(pair => pair.symbol === mutualPairs[i].replace("-",""));
-        let result = await g.comparePrices(mutualPairs[i], kcPrice, binPrice)
+
+        let result = await g.comparePrices(mutualPairs[i], kcPrice, binPrice, kcExchangeRates)
         arbitrageResults.push(result);
     };
     
