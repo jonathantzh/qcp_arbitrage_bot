@@ -21,17 +21,17 @@ exports.extractMutualPairs = function(binRes, kcRes) {
 
 exports.comparePrices = async function(pair, kcPrice, binPrice) {
     //price difference must be greater than spread
-    if((kcPrice.data.lastDealPrice - (kcPrice.data.sell - kcPrice.data.buy)) > binPrice.price) {
+    let kucoinPrice = kcPrice.data.lastDealPrice;
+    let binancePrice = binPrice.price;
+    let spread = kcPrice.data.sell - kcPrice.data.buy;
+    if(kucoinPrice - binancePrice > spread) {
         console.log(pair,": Buy BINANCE, Sell KUCOIN");
-        // saveResult(pair,'binance');
         return {pair, result: 'binance'};
-    } else if ((kcPrice.data.lastDealPrice + (kcPrice.data.sell - kcPrice.data.buy)) < binPrice.price) {
+    } else if (binancePrice - kucoinPrice > spread) {
         console.log(pair,": Buy KUCOIN, Sell BINANCE");
-        // saveResult(pair,'kucoin');
-        return {pair, result: 'kucoin'};;
+        return {pair, result: 'kucoin'};
     } else {
         console.log(pair,": NEITHER");
-        // saveResult(pair,'neither');
         return {pair, result: 'neither'};
     }
 }
