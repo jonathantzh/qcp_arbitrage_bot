@@ -35,3 +35,16 @@ exports.comparePrices = async function(pair, kcPrice, binPrice) {
         return {pair, result: 'neither'};
     }
 }
+
+exports.isInstrumentValid = function(instrument) {
+    switch(instrument) {
+        case "":
+            return false;
+        case undefined:
+            return false;
+        case null:
+            return false;
+        default:
+            return true;
+    }
+}
