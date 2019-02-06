@@ -20,24 +20,36 @@ exports.extractMutualPairs = function(binRes, kcRes) {
 }
 
 exports.comparePrices = async function(pair, kcPrice, binPrice, exchangeRates) {
-    //price difference must be greater than spread
-    let kucoinPrice = kcPrice.data.lastDealPrice;
-    let binancePrice = binPrice.price;
-    let spread = kcPrice.data.sell - kcPrice.data.buy;
+    //binance api only provides price (X)
+    let kucoinPrice = parseFloat(kcPrice.data.lastDealPrice);
+    let binancePrice = parseFloat(binPrice.price);
+    let spread = parseFloat(kcPrice.data.sell) - parseFloat(kcPrice.data.buy);
 
-    //get exchange rate of base instrument to USD res.data.data.GAS.quote.USD.price
-    console.log(exchangeRates[pair.split('-')[0]].quote.USD.price);
+    //get exchange rate of base instrument to USD (Y)
+    //e.g. (base instrument is ETH) ETH-BTC = X, ETH-USD = Y, USD/BTC = X/Y => 1 USD is able to buy X/Y BTC
+    if(exchangeRates.data.data[pair.split('-')[0]] !== undefined) {
+        let baseCurrInUsd = exchangeRates.data.data[pair.split('-')[0]].quote.USD.price;
+        let binPriceInUsd = binancePrice/baseCurrInUsd;
+        let kcPriceInUsd = kucoinPrice/baseCurrInUsd;
 
-    if(kucoinPrice - binancePrice > spread) {
-        console.log(pair,": Buy BINANCE, Sell KUCOIN");
-        return {pair, result: 'binance'};
-    } else if (binancePrice - kucoinPrice > spread) {
-        console.log(pair,": Buy KUCOIN, Sell BINANCE");
-        return {pair, result: 'kucoin'};
+        //price difference must be greater than spread
+        if(kucoinPrice - binancePrice > spread) {
+            console.log(pair,": Buy BINANCE @", binPriceInUsd,"and Sell KUCOIN @", kcPriceInUsd);
+            return {pair, result: 'binance'};
+        } else if (binancePrice - kucoinPrice > spread) {
+            console.log(pair,": Buy KUCOIN @", kcPriceInUsd, "and Sell BINANCE @", binPriceInUsd);
+            return {pair, result: 'kucoin'};
+        } else {
+            console.log(pair,": NEITHER");
+            return {pair, result: 'neither'};
+        }
     } else {
+        console.log("Exchange information not found for", pair.split('-')[0], "which is required for", pair);
         console.log(pair,": NEITHER");
         return {pair, result: 'neither'};
     }
+
+    
 }
 
 exports.isInstrumentValid = function(instrument) {

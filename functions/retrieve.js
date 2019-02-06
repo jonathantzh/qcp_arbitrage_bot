@@ -32,7 +32,6 @@ exports.retrieveKcInstrumentsTicker = function (pair) {
 }
 
 exports.retrieveExchangeRates = function (instruments) {
-    console.log(instruments);
     return new Promise(function (resolve,reject) {
        axios.get("https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol="+instruments, {headers: {'X-CMC_PRO_API_KEY': keys.coinmarketcapApiKey}}).then(function(res) {
             resolve(res); 
