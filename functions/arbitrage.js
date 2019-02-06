@@ -6,9 +6,18 @@ async function main() {
     let kcPairs = await r.retrieveKcInstruments();
     let mutualPairs = await g.extractMutualPairs(binPairs,kcPairs);
     
-    let kcExchangeRates = await r.retrieveKcExchangeRates(mutualPairs);
-    console.log(kcExchangeRates);
-    // let binExchangeRates = await r.retrieveBinExchangeRates();
+    let mutualPairsFirstHundred = mutualPairs.slice(0,100);
+    let baseCurrencyString = mutualPairsFirstHundred.map(pair => pair.split('-')[0]).join();
+    let exchangeRates1 = await r.retrieveExchangeRates(baseCurrencyString);
+
+    let mutualPairsSecondHundred = mutualPairs.slice(100,);
+    let baseCurrencyString2 = mutualPairsSecondHundred.map(pair => pair.split('-')[0]).join();
+    let exchangeRates2 = await r.retrieveExchangeRates(baseCurrencyString2);
+
+    console.log(exchangeRates1.data.data);
+    console.log(exchangeRates2.data.data);
+
+    // let exchangeRates = {...exchangeRates1.data.data, ...exchangeRates2.data.data}
 
     let arbitrageResults = [];
 
@@ -18,7 +27,7 @@ async function main() {
         let kcPrice = await r.retrieveKcInstrumentsTicker(mutualPairs[i]);
         let binPrice = binPairs.data.find(pair => pair.symbol === mutualPairs[i].replace("-",""));
 
-        let result = await g.comparePrices(mutualPairs[i], kcPrice, binPrice, kcExchangeRates)
+        let result = await g.comparePrices(mutualPairs[i], kcPrice, binPrice, exchangeRates)
         arbitrageResults.push(result);
     };
     

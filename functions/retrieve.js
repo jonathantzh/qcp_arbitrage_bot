@@ -1,8 +1,8 @@
 const axios = require('axios');
+const keys = require('../keys/keys');
 
 //setup kucoin api
 const Kucoin = require('kucoin-api')
-const keys = require('../keys/keys');
 const kc = new Kucoin(keys.kucoinApiKey, keys.kucoinApiSecret);
 
 exports.retrieveBinanceInstruments = function() {
@@ -31,13 +31,11 @@ exports.retrieveKcInstrumentsTicker = function (pair) {
     });
 }
 
-exports.retrieveKcExchangeRates = function (instruments) {
-
-    let baseInstruments = instruments.map(instrument => instrument.split('-')[0])
-
+exports.retrieveExchangeRates = function (instruments) {
+    console.log(instruments);
     return new Promise(function (resolve,reject) {
-        kc.getExchangeRates({symbols: baseInstruments}).then(function(res) {
-            resolve(res);
-        }).catch(function(err){reject(err)});
+       axios.get("https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol="+instruments, {headers: {'X-CMC_PRO_API_KEY': keys.coinmarketcapApiKey}}).then(function(res) {
+            resolve(res); 
+       }).catch(function(err) {reject(err)});
     });
 }
