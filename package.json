@@ -16,6 +16,7 @@
     "axios": "^0.18.0",
     "cors": "^2.8.5",
     "express": "^4.16.4",
-    "kucoin-api": "0.0.3"
+    "kucoin-api": "0.0.3",
+    "restify-clients": "^2.6.4"
   }
 }

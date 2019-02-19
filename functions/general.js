@@ -8,11 +8,12 @@ exports.extractMutualPairs = function(binRes, kcRes) {
             mutualPairs = [];
 
             binSymbols.forEach(binSymbol => {
+                console.log(binSymbol)
                 if(kcSymbolsNoDash.indexOf(binSymbol) > -1) {
                     mutualPairs.push(kcSymbols[kcSymbolsNoDash.indexOf(binSymbol)]);
                 }
             });
-            resolve (mutualPairs);
+            resolve(mutualPairs);
         } catch (err) {
             reject(err);
         }
@@ -20,19 +21,23 @@ exports.extractMutualPairs = function(binRes, kcRes) {
 }
 
 exports.comparePrices = async function(pair, kcPrice, binPrice) {
-    //price difference must be greater than spread
-    let kucoinPrice = kcPrice.data.lastDealPrice;
-    let binancePrice = binPrice.price;
-    let spread = kcPrice.data.sell - kcPrice.data.buy;
+    //BNB discount in first year: 50% of trading fee
+    //assume binance trading fee is 0.1%, since <100BTC traded
+    //assume kucoin trading fee is 0.1%, since <1000KCS held
+    let binTradingFee = pair.includes('BNB') ? 0.0005 : 0.001;
+    let kcTradingFee = 0.001
 
-    //get exchange rate of base instrument to USD res.data.data.GAS.quote.USD.price
-    // console.log(exchangeRates[pair.split('-')[0]].quote.USD.price);
+    let kucoinBuyPrice = parseFloat(kcPrice.data.bestAsk) * (1+kcTradingFee);
+    let kucoinSellPrice = parseFloat(kcPrice.data.bestBid) * (1-kcTradingFee);
 
-    if(kucoinPrice - binancePrice > spread) {
-        console.log(pair,": Buy BINANCE, Sell KUCOIN");
+    let binanceBuyPrice = parseFloat(binPrice.price) * (1+binTradingFee);
+    let binanceSellPrice = parseFloat(binPrice.price) * (1-binTradingFee);
+
+    if(binanceBuyPrice < kucoinSellPrice) {
+        console.log(pair,": Buy BINANCE @", binanceBuyPrice,"and Sell KUCOIN @", kucoinSellPrice);
         return {pair, result: 'binance'};
-    } else if (binancePrice - kucoinPrice > spread) {
-        console.log(pair,": Buy KUCOIN, Sell BINANCE");
+    } else if (kucoinBuyPrice < binanceSellPrice) {
+        console.log(pair,": Buy KUCOIN @", kucoinBuyPrice, "and Sell BINANCE @", binanceSellPrice);
         return {pair, result: 'kucoin'};
     } else {
         console.log(pair,": NEITHER");
