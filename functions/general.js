@@ -20,7 +20,6 @@ exports.extractMutualPairs = function(binRes, kcRes) {
 }
 
 exports.comparePrices = function(pair, kcPrice, binPrice) {
-    
     let kucoinBuyPrice = applyKucoinTradingFees(parseFloat(kcPrice.bestAsk), 'buy');
     let kucoinSellPrice = applyKucoinTradingFees(parseFloat(kcPrice.bestBid), 'sell');
 
@@ -28,11 +27,11 @@ exports.comparePrices = function(pair, kcPrice, binPrice) {
     let binanceSellPrice = applyBinanceTradingFees(parseFloat(binPrice), 'sell', pair);
 
     if(binanceBuyPrice < kucoinSellPrice) {
-        console.log(pair,": Buy BINANCE @", binanceBuyPrice,"and Sell KUCOIN @", kucoinSellPrice);
-        return {pair, result: 'binance'};
+        console.log(pair,": Buy BINANCE @", binanceBuyPrice,"and Sell KUCOIN @", kucoinSellPrice, "with size:", kcPrice.bestBidSize);
+        return {pair, result: 'binance', size: kcPrice.bestBidSize};
     } else if (kucoinBuyPrice < binanceSellPrice) {
-        console.log(pair,": Buy KUCOIN @", kucoinBuyPrice, "and Sell BINANCE @", binanceSellPrice);
-        return {pair, result: 'kucoin'};
+        console.log(pair,": Buy KUCOIN @", kucoinBuyPrice, "and Sell BINANCE @", binanceSellPrice, "with size", kcPrice.bestAskSize);
+        return {pair, result: 'kucoin', size: kcPrice.bestAskSize};
     } else {
         console.log(pair,": NEITHER");
         return {pair, result: 'neither'};
